@@ -5,15 +5,12 @@
 package model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -43,16 +40,18 @@ public class MovimentacaoVenda implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @Column(name = "valor_unitario")
-    private BigDecimal valorUnitario;
-    @JoinColumn(name = "id_pessoa_juridica", referencedColumnName = "pessoa_id")
-    @ManyToOne(optional = false)
-    private PessoaJuridica idPessoaJuridica;
-    @JoinColumn(name = "id_produto", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Produto idProduto;
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Usuario idUsuario;
+    private Double valorUnitario;
+    @Basic(optional = false)
+    @Column(name = "id_pessoa_juridica")
+    private Integer idPessoaJuridica; // Alterado para armazenar apenas o ID
+
+    @Basic(optional = false)
+    @Column(name = "id_produto")
+    private Integer idProduto; // Alterado para armazenar apenas o ID
+
+    @Basic(optional = false)
+    @Column(name = "id_usuario")
+    private Integer idUsuario; // Alterado para armazenar apenas o ID
 
     public MovimentacaoVenda() {
     }
@@ -61,7 +60,7 @@ public class MovimentacaoVenda implements Serializable {
         this.id = id;
     }
 
-    public MovimentacaoVenda(Integer id, int quantidadeProduto, BigDecimal valorUnitario) {
+    public MovimentacaoVenda(Integer id, int quantidadeProduto, Double valorUnitario) {
         this.id = id;
         this.quantidadeProduto = quantidadeProduto;
         this.valorUnitario = valorUnitario;
@@ -83,35 +82,35 @@ public class MovimentacaoVenda implements Serializable {
         this.quantidadeProduto = quantidadeProduto;
     }
 
-    public BigDecimal getValorUnitario() {
+    public Double getValorUnitario() {
         return valorUnitario;
     }
 
-    public void setValorUnitario(BigDecimal valorUnitario) {
+    public void setValorUnitario(Double valorUnitario) {
         this.valorUnitario = valorUnitario;
     }
 
-    public PessoaJuridica getIdPessoaJuridica() {
+    public Integer getIdPessoaJuridica() {
         return idPessoaJuridica;
     }
 
-    public void setIdPessoaJuridica(PessoaJuridica idPessoaJuridica) {
+    public void setIdPessoaJuridica(Integer idPessoaJuridica) {
         this.idPessoaJuridica = idPessoaJuridica;
     }
 
-    public Produto getIdProduto() {
+    public Integer getIdProduto() {
         return idProduto;
     }
 
-    public void setIdProduto(Produto idProduto) {
+    public void setIdProduto(Integer idProduto) {
         this.idProduto = idProduto;
     }
 
-    public Usuario getIdUsuario() {
+    public Integer getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(Usuario idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -139,5 +138,5 @@ public class MovimentacaoVenda implements Serializable {
     public String toString() {
         return "model.MovimentacaoVenda[ id=" + id + " ]";
     }
-    
+
 }

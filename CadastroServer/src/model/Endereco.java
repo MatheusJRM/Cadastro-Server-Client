@@ -1,11 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
+ * Classe que representa um endereço.
  *
  * @author mathe
  */
@@ -32,37 +27,44 @@ import javax.persistence.Table;
     @NamedQuery(name = "Endereco.findByCidade", query = "SELECT e FROM Endereco e WHERE e.cidade = :cidade"),
     @NamedQuery(name = "Endereco.findByEstado", query = "SELECT e FROM Endereco e WHERE e.estado = :estado"),
     @NamedQuery(name = "Endereco.findByComplemento", query = "SELECT e FROM Endereco e WHERE e.complemento = :complemento"),
-    @NamedQuery(name = "Endereco.findByCep", query = "SELECT e FROM Endereco e WHERE e.cep = :cep")})
+    @NamedQuery(name = "Endereco.findByCep", query = "SELECT e FROM Endereco e WHERE e.cep = :cep")
+})
 public class Endereco implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+
     @Basic(optional = false)
     @Column(name = "logradouro")
     private String logradouro;
+
     @Basic(optional = false)
     @Column(name = "bairro")
     private String bairro;
+
     @Basic(optional = false)
     @Column(name = "numero")
     private String numero;
+
     @Basic(optional = false)
     @Column(name = "cidade")
     private String cidade;
+
     @Basic(optional = false)
     @Column(name = "estado")
     private String estado;
+
     @Column(name = "complemento")
     private String complemento;
+
     @Basic(optional = false)
     @Column(name = "cep")
     private String cep;
-    @OneToMany(mappedBy = "idEndereco")
-    private Collection<Pessoa> pessoaCollection;
 
     public Endereco() {
     }
@@ -145,14 +147,6 @@ public class Endereco implements Serializable {
         this.cep = cep;
     }
 
-    public Collection<Pessoa> getPessoaCollection() {
-        return pessoaCollection;
-    }
-
-    public void setPessoaCollection(Collection<Pessoa> pessoaCollection) {
-        this.pessoaCollection = pessoaCollection;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -162,7 +156,6 @@ public class Endereco implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Endereco)) {
             return false;
         }
@@ -177,5 +170,4 @@ public class Endereco implements Serializable {
     public String toString() {
         return "model.Endereco[ id=" + id + " ]";
     }
-    
 }

@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 import model.Produto;
 
 import java.util.List;
+import javax.persistence.EntityTransaction;
 
 public class ProdutoJpaController {
 
@@ -16,11 +17,13 @@ public class ProdutoJpaController {
         this.emf = emf;
     }
 
-    // Método para listar todos os produtos
+    private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+
     public List<Produto> findAll() {
-        EntityManager em = null;
+        EntityManager em = getEntityManager();
         try {
-            em = emf.createEntityManager();
             TypedQuery<Produto> query = em.createQuery("SELECT p FROM Produto p", Produto.class);
             return query.getResultList();
         } catch (Exception e) {
@@ -33,11 +36,9 @@ public class ProdutoJpaController {
         }
     }
 
-    // Método para encontrar um produto pelo ID
-    public Produto findById(Long id) {
-        EntityManager em = null;
+    public Produto findById(int id) {
+        EntityManager em = getEntityManager();
         try {
-            em = emf.createEntityManager();
             return em.find(Produto.class, id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,4 +49,30 @@ public class ProdutoJpaController {
             }
         }
     }
+
+    public void atualizarQuantidade(int idProduto, int quantidade) {
+        EntityManager em = getEntityManager(); // Método para obter o EntityManager
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+            Produto produto = em.find(Produto.class, idProduto);
+            if (produto != null) {
+                // Atualiza a quantidade do produto
+                produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() + quantidade);
+                em.merge(produto); // Persiste as alterações
+            } else {
+                throw new Exception("Produto não encontrado.");
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback(); // Desfaz as alterações em caso de erro
+            }
+            e.printStackTrace();
+        } finally {
+            em.close(); // Fecha o EntityManager
+        }
+    }
+
 }

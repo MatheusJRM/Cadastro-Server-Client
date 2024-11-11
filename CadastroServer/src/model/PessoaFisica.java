@@ -1,21 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 /**
@@ -24,57 +16,28 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Pessoa_Fisica")
+@DiscriminatorValue("1")
+@PrimaryKeyJoinColumn(name = "pessoa_id")
 @NamedQueries({
     @NamedQuery(name = "PessoaFisica.findAll", query = "SELECT p FROM PessoaFisica p"),
-    @NamedQuery(name = "PessoaFisica.findByPessoaId", query = "SELECT p FROM PessoaFisica p WHERE p.pessoaId = :pessoaId"),
-    @NamedQuery(name = "PessoaFisica.findByIdTipoPessoa", query = "SELECT p FROM PessoaFisica p WHERE p.idTipoPessoa = :idTipoPessoa"),
-    @NamedQuery(name = "PessoaFisica.findByCpf", query = "SELECT p FROM PessoaFisica p WHERE p.cpf = :cpf")})
-public class PessoaFisica implements Serializable {
+    @NamedQuery(name = "PessoaJuridica.findByPessoaId", query = "SELECT p FROM Pessoa p JOIN PessoaJuridica pj ON pj.pessoaId = p.id WHERE p.id = :id AND p.idTipoPessoa.id = 2"),
+    @NamedQuery(name = "PessoaFisica.findByCpf", query = "SELECT p FROM PessoaFisica p WHERE p.cpf = :cpf")
+})
+public class PessoaFisica extends Pessoa implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @Column(name = "pessoa_id")
-    private Integer pessoaId;
-    @Basic(optional = false)
-    @Column(name = "id_tipo_pessoa")
-    private int idTipoPessoa;
+
     @Basic(optional = false)
     @Column(name = "cpf")
     private String cpf;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPessoaFisica")
-    private Collection<MovimentacaoCompra> movimentacaoCompraCollection;
-    @JoinColumn(name = "pessoa_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Pessoa pessoa;
 
     public PessoaFisica() {
+        super(); // Chama o construtor da classe base
     }
 
-    public PessoaFisica(Integer pessoaId) {
-        this.pessoaId = pessoaId;
-    }
-
-    public PessoaFisica(Integer pessoaId, int idTipoPessoa, String cpf) {
-        this.pessoaId = pessoaId;
-        this.idTipoPessoa = idTipoPessoa;
+    public PessoaFisica(Integer id, String nome, String telefone, TiposPessoa idTipoPessoa, String cpf) {
+        super(id, nome, telefone, idTipoPessoa);
         this.cpf = cpf;
-    }
-
-    public Integer getPessoaId() {
-        return pessoaId;
-    }
-
-    public void setPessoaId(Integer pessoaId) {
-        this.pessoaId = pessoaId;
-    }
-
-    public int getIdTipoPessoa() {
-        return idTipoPessoa;
-    }
-
-    public void setIdTipoPessoa(int idTipoPessoa) {
-        this.idTipoPessoa = idTipoPessoa;
     }
 
     public String getCpf() {
@@ -85,45 +48,24 @@ public class PessoaFisica implements Serializable {
         this.cpf = cpf;
     }
 
-    public Collection<MovimentacaoCompra> getMovimentacaoCompraCollection() {
-        return movimentacaoCompraCollection;
-    }
-
-    public void setMovimentacaoCompraCollection(Collection<MovimentacaoCompra> movimentacaoCompraCollection) {
-        this.movimentacaoCompraCollection = movimentacaoCompraCollection;
-    }
-
-    public Pessoa getPessoa() {
-        return pessoa;
-    }
-
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
-    }
-
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (pessoaId != null ? pessoaId.hashCode() : 0);
+        int hash = super.hashCode(); // Inclui o hash da classe base
+        hash += (getId() != null ? getId().hashCode() : 0); // Alterado para getId()
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof PessoaFisica)) {
             return false;
         }
         PessoaFisica other = (PessoaFisica) object;
-        if ((this.pessoaId == null && other.pessoaId != null) || (this.pessoaId != null && !this.pessoaId.equals(other.pessoaId))) {
-            return false;
-        }
-        return true;
+        return super.equals(object) && (this.getId() != null || other.getId() == null) && (this.getId() == null || this.getId().equals(other.getId())); // Alterado para getId()
     }
 
     @Override
     public String toString() {
-        return "model.PessoaFisica[ pessoaId=" + pessoaId + " ]";
+        return "model.PessoaFisica[ pessoaId=" + getId() + ", cpf=" + cpf + " ]"; // Usa o método da classe base
     }
-    
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.io.Serializable;
@@ -25,16 +21,20 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "TiposPessoa.findAll", query = "SELECT t FROM TiposPessoa t"),
     @NamedQuery(name = "TiposPessoa.findById", query = "SELECT t FROM TiposPessoa t WHERE t.id = :id"),
-    @NamedQuery(name = "TiposPessoa.findByTipoPessoa", query = "SELECT t FROM TiposPessoa t WHERE t.tipoPessoa = :tipoPessoa")})
+    @NamedQuery(name = "TiposPessoa.findByTipoPessoa", query = "SELECT t FROM TiposPessoa t WHERE t.tipoPessoa = :tipoPessoa")
+})
 public class TiposPessoa implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "Tipo_Pessoa")
+
+    @Column(name = "Tipo_Pessoa", nullable = false) // Definido como não nulo
     private String tipoPessoa;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTipoPessoa")
     private Collection<Pessoa> pessoaCollection;
 
@@ -71,27 +71,20 @@ public class TiposPessoa implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return (id != null ? id.hashCode() : 0);
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof TiposPessoa)) {
             return false;
         }
         TiposPessoa other = (TiposPessoa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return (this.id != null || other.id == null) && (this.id == null || this.id.equals(other.id));
     }
 
     @Override
     public String toString() {
-        return "model.TiposPessoa[ id=" + id + " ]";
+        return "model.TiposPessoa[ id=" + id + ", tipoPessoa=" + tipoPessoa + " ]"; // Inclui o tipoPessoa
     }
-    
 }

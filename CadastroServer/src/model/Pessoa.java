@@ -6,17 +6,19 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -25,12 +27,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Pessoa")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "id_tipo_pessoa", discriminatorType = DiscriminatorType.INTEGER)
 @NamedQueries({
     @NamedQuery(name = "Pessoa.findAll", query = "SELECT p FROM Pessoa p"),
     @NamedQuery(name = "Pessoa.findById", query = "SELECT p FROM Pessoa p WHERE p.id = :id"),
     @NamedQuery(name = "Pessoa.findByNome", query = "SELECT p FROM Pessoa p WHERE p.nome = :nome"),
     @NamedQuery(name = "Pessoa.findByTelefone", query = "SELECT p FROM Pessoa p WHERE p.telefone = :telefone")})
-public class Pessoa implements Serializable {
+public abstract class Pessoa implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -38,19 +42,19 @@ public class Pessoa implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+
     @Basic(optional = false)
     @Column(name = "nome")
     private String nome;
+
     @Basic(optional = false)
     @Column(name = "telefone")
     private String telefone;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "pessoa")
-    private PessoaJuridica pessoaJuridica;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "pessoa")
-    private PessoaFisica pessoaFisica;
+
     @JoinColumn(name = "id_endereco", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Endereco idEndereco;
+
     @JoinColumn(name = "id_tipo_pessoa", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private TiposPessoa idTipoPessoa;
@@ -62,10 +66,11 @@ public class Pessoa implements Serializable {
         this.id = id;
     }
 
-    public Pessoa(Integer id, String nome, String telefone) {
+    public Pessoa(Integer id, String nome, String telefone, TiposPessoa idTipoPessoa) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
+        this.idTipoPessoa = idTipoPessoa;
     }
 
     public Integer getId() {
@@ -90,22 +95,6 @@ public class Pessoa implements Serializable {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public PessoaJuridica getPessoaJuridica() {
-        return pessoaJuridica;
-    }
-
-    public void setPessoaJuridica(PessoaJuridica pessoaJuridica) {
-        this.pessoaJuridica = pessoaJuridica;
-    }
-
-    public PessoaFisica getPessoaFisica() {
-        return pessoaFisica;
-    }
-
-    public void setPessoaFisica(PessoaFisica pessoaFisica) {
-        this.pessoaFisica = pessoaFisica;
     }
 
     public Endereco getIdEndereco() {
@@ -138,7 +127,8 @@ public class Pessoa implements Serializable {
             return false;
         }
         Pessoa other = (Pessoa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (this.id != null || other.id == null && (this.id == null || this.id.equals(other.id))) {
+        } else {
             return false;
         }
         return true;
@@ -148,5 +138,5 @@ public class Pessoa implements Serializable {
     public String toString() {
         return "model.Pessoa[ id=" + id + " ]";
     }
-    
+
 }
