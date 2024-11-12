@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "pessoa_id")
 @NamedQueries({
     @NamedQuery(name = "PessoaJuridica.findAll", query = "SELECT p FROM PessoaJuridica p"),
-    @NamedQuery(name = "PessoaJuridica.findById", query = "SELECT p FROM PessoaJuridica p WHERE p.id = :pessoaId"),
+    @NamedQuery(name = "PessoaJuridica.findById", query = "SELECT pj FROM PessoaJuridica pj WHERE pj.id = :id AND pj.idTipoPessoa.id = 2"),
     @NamedQuery(name = "PessoaJuridica.findByCnpj", query = "SELECT p FROM PessoaJuridica p WHERE p.cnpj = :cnpj")
 })
 public class PessoaJuridica extends Pessoa implements Serializable {

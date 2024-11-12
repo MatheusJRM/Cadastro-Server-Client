@@ -24,7 +24,7 @@ public class PessoaJpaController {
         EntityManager em = getEntityManager();
         try {
             // Consulta para buscar Pessoa pelo ID
-            TypedQuery<PessoaFisica> query = em.createQuery("SELECT pf FROM PessoaFisica pf WHERE pf.id = :id AND pf.idTipoPessoa.id = 1", PessoaFisica.class);
+            TypedQuery<PessoaFisica> query = em.createNamedQuery("PessoaFisica.findByPessoaId", PessoaFisica.class);
             query.setParameter("id", id);
             return query.getSingleResult(); // Retorna a única Pessoa encontrada
         } catch (NoResultException e) {
@@ -43,9 +43,7 @@ public class PessoaJpaController {
     public Pessoa getByIdPj(int id) {
         EntityManager em = getEntityManager();
         try {
-            TypedQuery<PessoaJuridica> query = em.createQuery(
-                    "SELECT pj FROM PessoaJuridica pj WHERE pj.id = :id AND pj.idTipoPessoa.id = 2",
-                    PessoaJuridica.class);
+            TypedQuery<PessoaJuridica> query = em.createNamedQuery("PessoaJuridica.findById", PessoaJuridica.class);
             query.setParameter("id", id);
             return query.getSingleResult();
         } catch (NoResultException e) {
